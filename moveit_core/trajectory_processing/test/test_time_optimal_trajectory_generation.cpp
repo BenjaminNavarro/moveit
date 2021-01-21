@@ -227,6 +227,27 @@ TEST(time_optimal_trajectory_generation, testLargeAccel)
   }
 }
 
+TEST(time_optimal_trajectory_generation, test_return_home)
+{
+  Eigen::VectorXd waypoint(6);
+  std::list<Eigen::VectorXd> waypoints;
+
+  waypoint << 0, 0.7, -2.1, 0, -0.25, 0;
+  waypoints.push_back(waypoint);
+  waypoint << 0, 0, 0, 0, 0, 0;
+  waypoints.push_back(waypoint);
+  waypoint << 0, 0.70001, -2.1, 0, -0.25, 0;
+  waypoints.push_back(waypoint);
+
+  Eigen::VectorXd max_velocities(6);
+  max_velocities.setOnes();
+  Eigen::VectorXd max_accelerations(6);
+  max_accelerations.setOnes();
+
+  Trajectory trajectory(Path(waypoints, 0.001), max_velocities, max_accelerations, 1e-2);
+  EXPECT_TRUE(trajectory.isValid());
+}
+
 int main(int argc, char** argv)
 {
   testing::InitGoogleTest(&argc, argv);
